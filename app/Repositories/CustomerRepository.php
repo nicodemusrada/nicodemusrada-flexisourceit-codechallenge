@@ -5,7 +5,6 @@ namespace App\Repositories;
 
 use App\Constants\CustomerEntityConstants;
 use App\Entities\Customer;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use LaravelDoctrine\ORM\Facades\EntityManager;
 
@@ -17,12 +16,6 @@ use LaravelDoctrine\ORM\Facades\EntityManager;
  */
 class CustomerRepository
 {
-    /**
-     * Entity Manager Interface
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
     /**
      * Entity used
      * @var string

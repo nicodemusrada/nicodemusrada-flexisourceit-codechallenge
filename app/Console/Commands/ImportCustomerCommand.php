@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Apis\RandomUser\RandomUserApi;
-use App\Repositories\CustomerRepository;
 use App\Services\CustomerService;
 use Illuminate\Console\Command;
 use Exception;
