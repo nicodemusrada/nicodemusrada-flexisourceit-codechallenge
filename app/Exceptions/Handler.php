@@ -80,9 +80,6 @@ class Handler extends ExceptionHandler
     {
         $statusCode = 500;
         $message = 'Internal Server Error';
-        // Since there are no request paramaters to be validated:
-        // - ValidationException will not be caught and will not be removed in the $dontReport variable 
-        // - Will also not use the $request from the render method
     
         $exceptionName = class_basename($exception);
 

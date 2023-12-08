@@ -40,11 +40,9 @@ class CustomerController extends BaseController
             'email',
             'country'
         ]);
-        $respose = (new GetAllCustomersTransformer())
+        return (new GetAllCustomersTransformer())
             ->response($customers)
             ->transform();
-
-        return $respose;
     }
 
     /**
@@ -64,10 +62,9 @@ class CustomerController extends BaseController
             'city',
             'phone'
         ]);
-        $response = (new GetCustomerTransformer())
+
+        return (new GetCustomerTransformer())
             ->response($customer)
             ->transform();
-
-        return $response;
     }
 }

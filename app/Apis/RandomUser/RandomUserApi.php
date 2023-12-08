@@ -9,7 +9,6 @@ use App\Constants\ApiConstants;
 use App\Constants\CustomerEntityConstants;
 use App\Constants\RandomUserConstants;
 use App\Exceptions\RandomUserRequestException;
-use Exception;
 
 /**
  * Class RandomUserApi
@@ -43,7 +42,6 @@ class RandomUserApi extends BaseApi implements UserDataProviderInterface
         if ($response[ApiConstants::SUCCESS] === false) {
             throw new RandomUserRequestException();
         }
-
 
         return $this->formatUserData($response);
     }
