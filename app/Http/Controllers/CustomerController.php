@@ -23,6 +23,10 @@ class CustomerController extends BaseController
      */
     private CustomerRepository $customerRepository;
 
+    /**
+     * CustomerController constructor
+     * @param CustomerRepository $customerRepository
+     */
     public function __construct(CustomerRepository $customerRepository)
     {
         $this->customerRepository = $customerRepository;
@@ -50,7 +54,7 @@ class CustomerController extends BaseController
      * @return JsonResponse
      * @throws
      */
-    public function getCustomerById(int $customerId)
+    public function getCustomerById(int $customerId): JsonResponse
     {
         $customer = $this->customerRepository->getCustomerById($customerId, [
             'firstName',

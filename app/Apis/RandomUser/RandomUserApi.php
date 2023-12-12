@@ -23,7 +23,7 @@ class RandomUserApi extends BaseApi implements UserDataProviderInterface
      */
     public function __construct()
     {
-        $this->setBaseUri('https://randomuser.me/api');
+        $this->setBaseUri(env('USER_API_BASE', 'https://randomuser.me/api'));
     }
 
     /**

@@ -23,9 +23,7 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-$app->withFacades(true, [
-    'LaravelDoctrine\ORM\Facades\EntityManager' => 'EntityManager'
-]);
+$app->withFacades();
 
 
 // $app->withEloquent();
@@ -101,6 +99,7 @@ $app->configure('database');
 
 $app->register(LaravelDoctrine\ORM\DoctrineServiceProvider::class);
 $app->register(LaravelDoctrine\Migrations\MigrationsServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

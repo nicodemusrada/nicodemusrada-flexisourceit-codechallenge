@@ -31,18 +31,12 @@ class CustomerService
     /**
      * CustomerService constructor
      * @param UserDataProviderInterface $userApi
+     * @param CustomerRepository $customerRepository
      */
-    public function __construct(UserDataProviderInterface $userApi)
+    public function __construct(UserDataProviderInterface $userApi, CustomerRepository $customerRepository)
     {
         $this->userApi = $userApi;
-    }
-
-    /**
-     * Initialize CustomerRepository
-     */
-    private function initializeRepository()
-    {
-        $this->customerRepository = new CustomerRepository;
+        $this->customerRepository = $customerRepository;
     }
 
     /**
@@ -57,7 +51,7 @@ class CustomerService
             ApiConstants::NATIONALITY => 'AU',
             ApiConstants::FIELDS      => 'name,email,login,gender,location,phone'
         ];
-
+        
         return $this->userApi->fetchUsers($queryParams);
     }
 
@@ -67,7 +61,6 @@ class CustomerService
      */
     public function importCustomers(array $customers): void
     {
-        $this->initializeRepository();
         $this->customerRepository->insertOrUpdateCustomers($customers);
     }
 }

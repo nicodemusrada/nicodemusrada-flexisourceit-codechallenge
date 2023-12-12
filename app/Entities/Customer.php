@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Entities;
 
-use App\Enums\Gender;
-use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
