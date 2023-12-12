@@ -24,12 +24,28 @@ class CustomerController extends BaseController
     private CustomerRepository $customerRepository;
 
     /**
+     * @var GetAllCustomersTransformer
+     */
+    private GetAllCustomersTransformer $getAllCustomersTransformer;
+
+    /**
+     * @var GetCustomerTransformer
+     */
+    private GetCustomerTransformer $getCustomerTransformer;
+
+    /**
      * CustomerController constructor
      * @param CustomerRepository $customerRepository
      */
-    public function __construct(CustomerRepository $customerRepository)
+    public function __construct(
+        CustomerRepository $customerRepository,
+        GetAllCustomersTransformer $getAllCustomersTransformer,
+        GetCustomerTransformer $getCustomerTransformer
+    )
     {
         $this->customerRepository = $customerRepository;
+        $this->getAllCustomersTransformer = $getAllCustomersTransformer;
+        $this->getCustomerTransformer = $getCustomerTransformer;
     }
     
     /**
@@ -44,7 +60,8 @@ class CustomerController extends BaseController
             'email',
             'country'
         ]);
-        return (new GetAllCustomersTransformer())
+
+        return $this->getAllCustomersTransformer
             ->response($customers)
             ->transform();
     }
@@ -67,7 +84,7 @@ class CustomerController extends BaseController
             'phone'
         ]);
 
-        return (new GetCustomerTransformer())
+        return $this->getCustomerTransformer
             ->response($customer)
             ->transform();
     }
