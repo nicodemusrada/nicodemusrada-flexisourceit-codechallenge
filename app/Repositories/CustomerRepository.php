@@ -5,8 +5,8 @@ namespace App\Repositories;
 
 use App\Constants\CustomerEntityConstants;
 use App\Entities\Customer;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
-use LaravelDoctrine\ORM\Facades\EntityManager;
 
 /**
  * Class CustomerRepository
@@ -16,6 +16,12 @@ use LaravelDoctrine\ORM\Facades\EntityManager;
  */
 class CustomerRepository
 {
+
+    /**
+     * Entity manager instance
+     */
+    private EntityManagerInterface $entityManager;
+
     /**
      * Entity used
      * @var string
@@ -23,38 +29,51 @@ class CustomerRepository
     private $entity = Customer::class;
 
     /**
+     * CustomerRepository
+     * @param EntityManagerInterface $entityManager
+     */
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
+    /**
      * Insert or update customers in the database
      * @param array $customers
      */
     public function insertOrUpdateCustomers(array $customers): void
     {
+        $existingCustomers = $this->entityManager
+            ->getRepository($this->entity)
+            ->findBy([CustomerEntityConstants::EMAIL => array_column($customers, CustomerEntityConstants::EMAIL)]);
+
+        $existingEntitiesByEmail = [];
+        foreach ($existingCustomers as $existingEntity) {
+            $existingEntitiesByEmail[$existingEntity->getEmail()] = $existingEntity;
+        }
+
         foreach ($customers as $customer) {
-            $currentEntity = EntityManager::getRepository($this->entity)
-                ->findOneBy([CustomerEntityConstants::EMAIL => $customer[CustomerEntityConstants::EMAIL]]);
-    
-            if (is_null($currentEntity) === true) {
+            $currentEntity = $existingEntitiesByEmail[$customer[CustomerEntityConstants::EMAIL]] ?? null;
+
+            if (is_null($currentEntity)) {
                 $currentEntity = new Customer();
                 $currentEntity->setEmail($customer[CustomerEntityConstants::EMAIL]);
-            } else {
-                $currentEntity = $currentEntity;
             }
-    
-            $currentEntity->setFirstName($customer[CustomerEntityConstants::FIRST_NAME]);
-            $currentEntity->setLastName($customer[ CustomerEntityConstants::LAST_NAME]);
-            $currentEntity->setGender($customer[CustomerEntityConstants::GENDER]);
 
+            $currentEntity->setFirstName($customer[CustomerEntityConstants::FIRST_NAME]);
+            $currentEntity->setLastName($customer[CustomerEntityConstants::LAST_NAME]);
+            $currentEntity->setGender($customer[CustomerEntityConstants::GENDER]);
             $currentEntity->setUserName($customer[CustomerEntityConstants::USERNAME]);
             $hashedPassword = md5($customer[CustomerEntityConstants::PASSWORD]);
             $currentEntity->setPassword($hashedPassword);
-            
             $currentEntity->setCountry($customer[CustomerEntityConstants::COUNTRY]);
             $currentEntity->setCity($customer[CustomerEntityConstants::CITY]);
             $currentEntity->setPhone($customer[CustomerEntityConstants::PHONE]);
-    
-            EntityManager::persist($currentEntity);
-        }
-    
-        EntityManager::flush();
+
+            $this->entityManager->persist($currentEntity);
+        }   
+
+        $this->entityManager->flush();
     }
 
     /**
@@ -64,7 +83,7 @@ class CustomerRepository
      */
     public function getAllCustomers(array $fields): array
     {
-        $queryBuilder = EntityManager::createQueryBuilder();
+        $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('c.' . implode(', c.', $fields))->from($this->entity, 'c');
 
         return $queryBuilder->getQuery()->getResult();
@@ -74,11 +93,12 @@ class CustomerRepository
      * Gets a specific customer by id with specific fields
      * @param int $customerId
      * @param array $fields
+     * @throws EntityNotFoundException
      * @return array
      */
     public function getCustomerById(int $customerId, array $fields): array
     {
-        $queryBuilder = EntityManager::createQueryBuilder();
+        $queryBuilder = $this->entityManager->createQueryBuilder();
         $queryBuilder->select('c.' . implode(', c.', $fields))
             ->from($this->entity, 'c')
             ->where('c.id = ' . $customerId);

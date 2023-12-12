@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Apis\RandomUser\RandomUserApi;
 use App\Services\CustomerService;
 use Illuminate\Console\Command;
 use Exception;
@@ -37,12 +36,12 @@ class ImportCustomerCommand extends Command
 
     /**
      * ImportCustomerCommand constructor
+     * @param CustomerService $customerService
      */
-    public function __construct()
+    public function __construct(CustomerService $customerService)
     {
         parent::__construct();
-        $userApi = new RandomUserApi();
-        $this->customerService = new CustomerService($userApi);
+        $this->customerService = $customerService;
     }
 
     /**

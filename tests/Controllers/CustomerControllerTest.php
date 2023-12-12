@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use App\Repositories\CustomerRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use Tests\TestCase;
 
@@ -19,7 +20,10 @@ class CustomerControllerTest extends TestCase
      */
     public function test_getAllCustomers_API_returns_customer_data_successfully(): void
     {
-        $mockRepository = $this->getMockBuilder(CustomerRepository::class)->getMock();
+        $mockEntityManager = $this->createMock(EntityManagerInterface::class);
+        $mockRepository = $this->getMockBuilder(CustomerRepository::class)
+            ->setConstructorArgs([$mockEntityManager])
+            ->getMock();
 
         $customers = [
             [
@@ -67,7 +71,10 @@ class CustomerControllerTest extends TestCase
      */
     public function test_getAllCustomers_API_returns_empty_data_successfully(): void
     {
-        $mockRepository = $this->getMockBuilder(CustomerRepository::class)->getMock();
+        $mockEntityManager = $this->createMock(EntityManagerInterface::class);
+        $mockRepository = $this->getMockBuilder(CustomerRepository::class)
+            ->setConstructorArgs([$mockEntityManager])
+            ->getMock();
 
         $customers = [];
 
@@ -89,7 +96,9 @@ class CustomerControllerTest extends TestCase
      */
     public function test_getCustomerById_API_returns_customer_data_successfully(): void
     {
+        $mockEntityManager = $this->createMock(EntityManagerInterface::class);
         $mockRepository = $this->getMockBuilder(CustomerRepository::class)
+            ->setConstructorArgs([$mockEntityManager])
             ->getMock();
 
         $customer =  [
@@ -144,7 +153,9 @@ class CustomerControllerTest extends TestCase
      */
     public function test_getCustomerById_API_returns_error_response_requesting_non_existing_user(): void
     {
+        $mockEntityManager = $this->createMock(EntityManagerInterface::class);
         $mockRepository = $this->getMockBuilder(CustomerRepository::class)
+            ->setConstructorArgs([$mockEntityManager])
             ->getMock();
 
         $customer =  [];
